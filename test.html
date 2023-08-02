@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coordinate Time Adjuster</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  #output {
+    margin-top: 20px;
+    white-space: pre;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Coordinate Time Adjuster</h1>
+  <label for="coordinates">Enter Coordinates and Dates:</label>
+  <textarea id="coordinates" rows="10" cols="50" placeholder="Enter coordinates and dates..."></textarea>
+  <label for="adjustment">Enter Adjustment (milliseconds):</label>
+  <input type="number" id="adjustment" placeholder="Enter adjustment..." />
+  <button onclick="adjustTime()">Adjust Time</button>
+  <div id="output"></div>
+</div>
+
+<script>
+  function adjustTime() {
+    const coordinatesInput = document.getElementById('coordinates').value;
+    const adjustment = parseInt(document.getElementById('adjustment').value);
+    const outputDiv = document.getElementById('output');
+
+    if (!isNaN(adjustment)) {
+      const lines = coordinatesInput.trim().split('\n');
+      let adjustedDates = '';
+
+      lines.forEach(line => {
+        const parts = line.split(',');
+        if (parts.length === 3) {
+          const [coordinates, date, time] = parts;
+          const dateTimeParts = time.split(/[T.]/);
+          //console.log(dateTimeParts.length)
+          if (dateTimeParts.length === 3) {
+            //console.log("here")
+            const [isoDate, isoTime, milliseconds] = dateTimeParts.slice(0, 3);
+            const isoDateTime = `${isoDate}T${isoTime}.${milliseconds}`;
+            const dateTime = new Date(isoDateTime);
+            dateTime.setMilliseconds(dateTime.getMilliseconds() + adjustment);
+            dateTime.setHours(dateTime.getHours() + 1);
+            const adjustedDate = dateTime.toISOString().slice(0, -1);
+            adjustedDates += `${coordinates},${date},${adjustedDate}\n`;
+          }
+        }
+      });
+
+      outputDiv.textContent = adjustedDates;
+    } else {
+      outputDiv.textContent = 'Please enter a valid adjustment.';
+    }
+  }
+</script>
+</body>
+</html>
