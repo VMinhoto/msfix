@@ -53,7 +53,7 @@
             const isoDateTime = `${isoDate}T${isoTime}.${milliseconds}`;
             const dateTime = new Date(isoDateTime);
             dateTime.setMilliseconds(dateTime.getMilliseconds() + adjustment);
-            dateTime.setHours(dateTime.getHours()); //fix timezone here
+            dateTime.setHours(dateTime.getHours() + 1); //fix timezone here
             const adjustedDate = dateTime.toISOString().slice(0, -1);
             adjustedDates += `${coordinates},${date},${adjustedDate}\n`;
           }
